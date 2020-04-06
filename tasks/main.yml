@@ -1,0 +1,38 @@
+---
+
+- name: "Check if {{ veeamextract_bin }} exists"
+  stat:
+    path: "{{ veeamextract_bin }}"
+  register: veeamextract
+
+- name: Create tempfile
+  tempfile:
+    state: file
+    suffix: veeamextract
+  register: tmpfile
+  tags: setup
+  when: not veeamextract.stat.exists
+
+- name: Download VeeamExtract
+  get_url:
+    url: "{{ veeamextract_url }}"
+    dest: "{{ tmpfile.path }}"
+    checksum: "sha1:{{ veeamextract_sha1 }}"
+  tags: download
+  when: not veeamextract.stat.exists
+
+- name: "Extract VeeamExtract into {{ veeamextract_bin }}"
+  unarchive:
+    src: "{{ tmpfile.path }}"
+    dest: "{{ veeamextract_bin | dirname }}"
+    creates: "{{ veeamextract_bin }}"
+    remote_src: yes
+  tags: extract
+  when: not veeamextract.stat.exists
+
+- name: Remove tempfile
+  file:
+    path: "{{ tmpfile.path }}"
+    state: absent
+  tags: setup
+  when: not veeamextract.stat.exists

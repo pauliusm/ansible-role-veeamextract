@@ -1,0 +1,6 @@
+---
+
+veeamextract_archive: 'VeeamExtract_10.0.0.4461.tar.gz'
+veeamextract_url: "https://download2.veeam.com/{{ veeamextract_archive }}"
+veeamextract_sha1: '5ee380fc5cf001e2b068c8bb4b195353b3780834'
+veeamextract_bin: '/usr/local/bin/extract'
